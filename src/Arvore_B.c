@@ -25,10 +25,13 @@ Ind Busca(No* no, char *chave){
 		return no->indice[i];
 	}
 
-	if(Altura_ArvB(no) == 0){
+	if(no->n_filhos == 0){
 		return NULL;
 	}
 
 	return Busca(no->filho[i], chave);
 }
+
+
+
 
