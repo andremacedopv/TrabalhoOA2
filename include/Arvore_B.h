@@ -1,15 +1,18 @@
 
+#define TAM_REG
+#define TAM_PAG
+#define TAM_CHAVE 9
 
 typedef struct ind{
-	char *chave;
+	char chave[8];
 	int reg_NRR;
 }Ind;
 
 typedef struct no{
-	int pag_NRR;
 	int n_ind;
 	int n_filhos;
 	Ind *indice;
+	int *filhos_NRR;
 	struct no **filho;
 }No;
 
@@ -24,5 +27,5 @@ typedef struct arvb{
 ArvB* Cria_ArvB(int ordem);
 
 /* Busca por uma chave em um no e retorna o índice correspondente */
-Ind Busca(No* no, char *chave);
+int Busca(No* no, char *chave, char *nome_arq);
 
