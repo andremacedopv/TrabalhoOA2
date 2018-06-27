@@ -28,7 +28,9 @@ void Criar_Indices(ArvB* Arvore, char* nome_arq, char* nome_arq_ind){
 
 	arquivo = fopen(nome_arq, "r+");
 	while(!feof(arquivo)){
-		fgets(reg, 54, arquivo);
+		char *temp = fgets(reg, 54, arquivo);
+		if(temp == NULL)
+			break;
 		if(reg[0]!='#'){
 			Criar_chave(reg, chave);
 			InserirItem(Arvore, chave, NRR);
