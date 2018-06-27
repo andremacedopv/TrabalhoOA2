@@ -14,10 +14,10 @@ void Criar_chave(char* reg, char* chave){
 		chave[i] = reg[i];
 	}
 	/* copia a matrícula para chave */
-	for(j=3; j<8; j++){
-		chave[i] = reg[40+i];
+	for(j=0; j<5; j++){
+		chave[j+3] = reg[41+j];
 	}
-	chave[j+1]='\0';
+	chave[8]='\0';
 
 }
 
@@ -28,7 +28,7 @@ void Criar_Indices(ArvB* Arvore, char* nome_arq, char* nome_arq_ind){
 
 	arquivo = fopen(nome_arq, "r+");
 	while(!feof(arquivo)){
-		fgets(reg, 53, arquivo);
+		fgets(reg, 54, arquivo);
 		if(reg[0]!='#'){
 			Criar_chave(reg, chave);
 			InserirItem(Arvore, chave, NRR);

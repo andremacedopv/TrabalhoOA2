@@ -13,6 +13,7 @@ int main (){
 
 	Criar_Indices(Arvore, nome_arq, nome_arq_ind);
 	Imprimir_Indices(nome_arq_ind);
+	ImprimirArvore(Arvore);
 
 	return 0;
 }
