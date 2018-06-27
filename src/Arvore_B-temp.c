@@ -10,6 +10,11 @@ No* AlocarNo(int ordem){
 	no->indice = (Ind*) malloc((ordem-1) * sizeof(Ind));
 	no->filho = (No**) malloc(ordem * sizeof(No*));
 	no->filhos_NRR = (int*) malloc(ordem * sizeof(int));
+
+	/* Iniciar com -1 filhos_NRR. */
+	for(int i = 0; i < ordem; i++)
+		no->filhos_NRR[i] = -1;
+	
 	/* Inicializar quantidade de filhos e indices como 0. */
 	no->n_ind = 0;
 	no->n_filhos = 0;
