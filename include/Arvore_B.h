@@ -1,10 +1,12 @@
+#ifndef ARVORE_B_
+#define ARVORE_B_
 
 #define TAM_REG
 #define TAM_PAG
 #define TAM_CHAVE 9
 
 typedef struct ind{
-	char chave[8];
+	char chave[TAM_CHAVE];
 	int reg_NRR;
 }Ind;
 
@@ -29,3 +31,4 @@ ArvB* Cria_ArvB(int ordem);
 /* Busca por uma chave em um no e retorna o índice correspondente */
 int Busca(No* no, char *chave, char *nome_arq);
 
+#endif
