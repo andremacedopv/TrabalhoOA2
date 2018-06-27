@@ -1,5 +1,6 @@
 #include "../include/Registros.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 
 void Criar_chave(char* reg, char* chave){

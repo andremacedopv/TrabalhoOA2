@@ -15,4 +15,10 @@ void InserirNaoCheio(No* no, char chave[], int reg_NRR, int ordem);
 /* Função que insere um novo item em um nó. */
 void InserirItem(ArvB* arv, char chave[], int reg_NRR);
 
+/* Imprimir o nó de uma árvore no terminal. */
+int ImprimirNo(No* no, int idx_pai, int idx_atual);
+
+/* Imprimir árvore no terminal. */
+void ImprimirArvore(ArvB *arv);
+
 #endif

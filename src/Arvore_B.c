@@ -20,7 +20,7 @@ int Salvar_ArvB(No *no, int ordem, FILE *arquivo){
 	static int n = 0;
 	/* Chama a função recursivamente para os filhos */
 	if(no->n_filhos != 0){
-		for(i=0; i<ordem; i++){
+		for(i=0; i<no->n_filhos; i++){
 			no->filhos_NRR[i] = Salvar_ArvB(no->filho[i], ordem, arquivo);
 		}
 	}	

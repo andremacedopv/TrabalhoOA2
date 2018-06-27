@@ -1,5 +1,6 @@
 #ifndef ARVORE_B_
 #define ARVORE_B_
+
 #include <stdio.h>
 #define TAM_REG 54
 #define TAM_CHAVE 9
