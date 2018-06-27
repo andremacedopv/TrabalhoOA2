@@ -53,7 +53,7 @@ void Imprimir_Indices(char* nome_arq_ind){
 	arquivo = fopen(nome_arq_ind, "r+");
 	while(!feof(arquivo)){
 		fscanf(arquivo,"%200[^\n]", pag);
-		printf("%d %s\n", NRR, pag);
+		printf("%3d %s\n", NRR, pag);
 		fgetc(arquivo);
 		NRR ++;
 	}

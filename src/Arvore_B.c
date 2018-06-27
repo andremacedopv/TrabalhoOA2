@@ -17,7 +17,8 @@ ArvB* Criar_ArvB(int ordem){
 
 int Salvar_ArvB(No *no, int ordem, FILE *arquivo){
 	int i;
-	static int n = 0;
+
+	static int n = -1;
 	/* Chama a função recursivamente para os filhos */
 	if(no->n_filhos != 0){
 		for(i=0; i<no->n_filhos; i++){
@@ -26,11 +27,11 @@ int Salvar_ArvB(No *no, int ordem, FILE *arquivo){
 	}	
 	/* imprime as chaves e os NRR dos registros correspondentes */
 	for(i=0; i<ordem-1; i++){
-		if(i<no->n_filhos-1){
-			fprintf(arquivo, "%s %3d ", no->indice->chave, no->indice->reg_NRR);
+		if(i<no->n_ind){
+			fprintf(arquivo, "%s %3d ", no->indice[i].chave, no->indice[i].reg_NRR);
 		}
 		else{
-			fprintf(arquivo, "############");
+			fprintf(arquivo, "############ ");
 		}
 	}
 	/* imprime os NRRs dos filhos */
