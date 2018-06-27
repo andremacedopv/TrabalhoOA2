@@ -1,8 +1,7 @@
 #ifndef ARVORE_B_
 #define ARVORE_B_
-
-#define TAM_REG
-#define TAM_PAG
+#include <stdio.h>
+#define TAM_REG 54
 #define TAM_CHAVE 9
 
 typedef struct ind{
@@ -26,9 +25,12 @@ typedef struct arvb{
 
 
 /* Cria uma Árvore B vazia */
-ArvB* Cria_ArvB(int ordem);
+ArvB* Criar_ArvB(int ordem);
 
 /* Busca por uma chave em um no e retorna o índice correspondente */
-int Busca(No* no, char *chave, char *nome_arq);
+int Busca(No* no, int ordem, char *chave, char *nome_arq);
+
+/* Salva uma árvore B em um arquivo */
+int Salvar_ArvB(No *no, int ordem, FILE *arquivo);
 
 #endif
