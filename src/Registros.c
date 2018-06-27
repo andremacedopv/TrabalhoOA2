@@ -1,7 +1,73 @@
 #include "../include/Registros.h"
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+
+void Preenche_espacos(char* string, int tam){
+	int i, j;
+
+	for(i=0; i<tam; i++){
+		if(string[i] == '\0'){
+			for(j = i; j < tam -1; j++){
+				string[j] = ' ';
+			}
+			string[j] = '\0';
+			break;				
+		}
+	}	
+}
+
+void Inserir_Registro(ArvB* Arvore, char* nome_arq, char* nome_arq_ind){
+	FILE* arquivo;
+	char reg[TAM_REG+1], matricula[7], nome[41], curso[4], turma[1];
+	char chave[TAM_CHAVE];
+	int tamanho, NRR;
+
+	printf("Insira a matricula:\n");
+	scanf("%5s", matricula);
+	printf("\n");
+	printf("Insira o nome:\n");
+	scanf("\n%40[^\n]", nome);
+	printf("\n");
+	printf("Insira a curso:\n");
+	scanf("%3s", curso);
+	printf("\n");
+	printf("Insira a turma:\n");
+	scanf("%s", turma);
+	printf("\n");
+
+	//preenche os vetores com espaço
+	Preenche_espacos(nome, 41);   
+	Preenche_espacos(matricula, 7);
+	Preenche_espacos(curso, 4);
+	Preenche_espacos(turma, 1);
+
+	/* concatena os campos do registro */
+	strcpy(reg, nome);
+	strncat(reg, matricula, 7);
+	strncat(reg, curso, 4);
+	strncat(reg, turma, 1);
+
+	arquivo = fopen(nome_arq, "r+");
+	fseek(arquivo, 0, SEEK_END);
+	tamanho = ftell(arquivo);
+	NRR = tamanho / TAM_REG;
+	fprintf(arquivo, "%s\n", reg);
+	fclose(arquivo);
+
+	Criar_chave(reg, chave);
+	InserirItem(Arvore, chave, NRR);
+	Criar_Indices(Arvore, nome_arq, nome_arq_ind);
+
+}
+
+/*
+void Remover_Registro(ArvB* Arvore, char* chave, char* nome_arq, char* nome_arq_ind){
+
+	printf("")
+
+}*/
 
 void Criar_chave(char* reg, char* chave){
 	int i, j;
@@ -39,22 +105,25 @@ void Criar_Indices(ArvB* Arvore, char* nome_arq, char* nome_arq_ind){
 		NRR++;
 	}
 	fclose(arquivo);
-	arquivo = fopen(nome_arq_ind, "w+");
-	Salvar_ArvB(Arvore->raiz, Arvore->ordem, arquivo);
-	fclose(arquivo);
+
+	/* Salva a ordem da Árvore B */
+	Salvar_ArvB(Arvore, nome_arq_ind);
 
 }
 
 void Imprimir_Indices(char* nome_arq_ind){
 	FILE *arquivo;
-	char pag[200];
-	int NRR = 0;
-
+	int NRR = 0, ordem, TAM_PAG;
 	arquivo = fopen(nome_arq_ind, "r+");
-	while(!feof(arquivo)){
-		fscanf(arquivo,"%200[^\n]", pag);
-		printf("%3d %s\n", NRR, pag);
-		fgetc(arquivo);
+	fscanf(arquivo,"%d", &ordem);
+
+	/* Calcula o tamanho do registro correspondente a uma página da árvore b */
+	TAM_PAG = (ordem - 1)*(TAM_CHAVE + TAM_NRR) + ordem*TAM_NRR;
+	char pag[TAM_PAG+2];
+
+	fgetc(arquivo);
+	while(fgets(pag, TAM_PAG+2, arquivo)!= NULL){
+		printf("%3d %s", NRR, pag);
 		NRR ++;
 	}
 	fclose(arquivo);

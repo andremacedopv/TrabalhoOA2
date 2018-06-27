@@ -14,15 +14,14 @@ ArvB* Criar_ArvB(int ordem){
 	return Arvore;
 }
 
-
-int Salvar_ArvB(No *no, int ordem, FILE *arquivo){
+int Salvar_No(No *no, int ordem, FILE *arquivo){
 	int i;
-
 	static int n = -1;
+
 	/* Chama a função recursivamente para os filhos */
 	if(no->n_filhos != 0){
 		for(i=0; i<no->n_filhos; i++){
-			no->filhos_NRR[i] = Salvar_ArvB(no->filho[i], ordem, arquivo);
+			no->filhos_NRR[i] = Salvar_No(no->filho[i], ordem, arquivo);
 		}
 	}	
 	/* imprime as chaves e os NRR dos registros correspondentes */
@@ -41,6 +40,16 @@ int Salvar_ArvB(No *no, int ordem, FILE *arquivo){
 	fprintf(arquivo, "\n");
 	n++;
 	return n;
+}
+
+void Salvar_ArvB(ArvB* Arvore, char* nome_arq_ind){
+	FILE *arquivo;
+
+	arquivo = fopen(nome_arq_ind, "w+");
+	fprintf(arquivo, "%3d\n", Arvore->ordem);
+	Salvar_No(Arvore->raiz, Arvore->ordem, arquivo);
+	fclose(arquivo);
+
 }
 
 void Ler_No(int NRR, int ordem, char *nome_arq){ //incompleta
