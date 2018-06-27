@@ -61,3 +61,4 @@ main
 # Arquivos de indices e de texto
 *.txt
 *.ind
+*.bt
