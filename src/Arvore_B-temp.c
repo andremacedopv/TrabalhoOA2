@@ -142,7 +142,7 @@ void InserirItem(ArvB* arv, char chave[], int reg_NRR){
 int ImprimirNo(No* no, int idx_pai, int idx_atual){
 	int i;
 	/* Imprimir nó. */
-	printf("%d - Nó filho de %d: [ ", idx_atual, idx_pai);
+	printf("%02d - Nó filho de %02d: [ ", idx_atual, idx_pai);
 	for(i=0; i < no->n_ind; i++){
 		printf("%s ", no->indice[i].chave);
 	}
@@ -163,7 +163,7 @@ void ImprimirArvore(ArvB *arv){
 
 	/* Imprimir raiz. */
 	No* raiz = arv->raiz;
-	printf("%d - Raiz: [ ", idx_raiz);
+	printf("%02d - Raiz: [ ", idx_raiz);
 	for(i=0; i < raiz->n_ind; i++){
 		printf("%s ", raiz->indice[i].chave);
 	}
