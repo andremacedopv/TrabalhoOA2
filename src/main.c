@@ -15,8 +15,10 @@ int main(){
  	int ordem;
  	do{
 		printf("Digite a ordem da Árvore-B:\n");
-    	scanf("%d", &ordem);
- 	}while(ordem < 3);
+    scanf("%d", &ordem);
+    if(ordem%2 != 0 || ordem < 3)
+      printf("ERRO: Digite uma ordem par maior do que 3.\n");
+ 	}while(ordem < 4 || ordem%2 != 0);
 
 	/* Ler os dados e criar a árvore e o arquivo de indíce. */
 	char nome_arq[] = "lista.txt";
