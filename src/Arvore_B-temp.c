@@ -180,3 +180,138 @@ void ImprimirArvore(ArvB *arv){
 		idx_atual = ImprimirNo(raiz->filho[i], idx_raiz, idx_atual);
 	}
 }
+
+void LerNo(char* no, int tamanho, FILE* indice){
+	no[tamanho] = '\0';
+
+	/* Ler no. */
+	fgets(no, tamanho, indice);
+}
+
+void CopiarString(char* chave, char* NRR, char* origem, int numero){
+	for(int i = 0; i < 8; i++){
+		chave[i] = origem[i + 13*numero];
+	}
+	for(int i = 0; i < 3; i++){
+		NRR[i] = origem[i + 9 + 13*numero];
+	}
+}
+
+int ProximoSeek(char* no, int local){
+	char seek[4];
+	seek[3] = '\0';
+	for(int i =0; i<3; i++){
+		seek[i] = no[local + i];
+	}
+
+	return atoi(seek);
+}
+
+void LerRegistro(FILE* dados, int NRR, Reg* registro){
+	int i;
+	fseek(dados, 54*NRR, SEEK_SET);
+	for(i=0; i < 40; i++){
+		registro->nome[i] = fgetc(dados);
+	}
+	registro->nome[40] = '\0';
+
+	fgetc(dados);
+	char matricula[6];
+	for(i=0; i < 5; i++){
+		matricula[i] = fgetc(dados);
+	}
+	matricula[5] = '\0';
+	registro->matricula = atoi(matricula);
+
+	fgetc(dados);
+	fgetc(dados);
+	for(i=0; i < 2; i++){
+		registro->curso[i] = fgetc(dados);
+	}
+	registro->curso[2] = '\0';
+
+	fgetc(dados);
+	fgetc(dados);
+	registro->turma = fgetc(dados);
+}
+
+int BuscarRegistro(char *chave, Reg* registro){
+	FILE* indice, *dados;
+	int i;
+	int seeks = 0;
+	/* Abrir arquivo de índice. */
+	indice = fopen("indicelista.bt", "r+");
+
+	/* Pegar ordem da arvore. */
+	char ordem_s[4];
+	ordem_s[3] = '\0';
+	for(i=0; i < 3; i++)
+		ordem_s[i] = fgetc(indice);
+	int ordem = atoi(ordem_s);
+
+	/* Descobir tamanho do registro.*/
+	int tam_reg = (ordem-1)*13 + ordem*4 + 1;
+
+	/* Descobrir raiz. */
+	fseek(indice, 0, SEEK_END);
+	long int tell = ftell(indice);
+	fseek(indice, tell - tam_reg, SEEK_SET);
+	seeks++;
+
+	/* Achar registro. */
+	int NRR, next_seek;
+	char temp[TAM_CHAVE], NRR_s[4], no[tam_reg+1];
+	temp[TAM_CHAVE-1] = '\0';
+	NRR_s[3] = '\0';
+	int achou = 0;
+	int continuar = 1;
+	while(continuar){
+		LerNo(no, tam_reg, indice);
+		for(i=0; i < ordem-1; i++){
+			CopiarString(temp, NRR_s, no, i);
+			if(strcmp(chave, temp) == 0){
+				achou = 1;
+				continuar = 0;
+				i = ordem;
+				NRR = atoi(NRR_s);
+			} /* if */
+			else if(strcmp(chave, temp) < 0){
+				next_seek = ProximoSeek(no, 13*(ordem-1) + i*4);
+				if(next_seek == -1){
+					achou = 0;
+					continuar = 0;
+				}
+				else{
+					seeks++;
+					fseek(indice, tell - 56*next_seek, SEEK_SET);
+				}
+				i = ordem;
+			} /* else if */
+			else{
+				if(i == ordem-2){
+					next_seek = ProximoSeek(no, 13*(ordem-1) + (i+1)*4);
+					if(next_seek == -1){
+						achou = 0;
+						continuar = 0;
+					}
+					else{
+						seeks++;
+						fseek(indice, tell - 56*next_seek, SEEK_SET);
+					}
+					i = ordem;
+				} /* if */
+			} /* else */
+		} /* for */
+	} /* while */
+
+	if(achou){
+		dados = fopen("lista.txt", "r+");
+		LerRegistro(dados, NRR, registro);
+		fclose(dados);
+	}
+	else{
+		registro = NULL;
+	}
+
+	return seeks;
+}

@@ -3,6 +3,13 @@
 
 #include "Arvore_B.h"
 
+typedef struct reg{
+	char nome[41];
+	int matricula;
+	char curso[3];
+	char turma;
+}Reg;
+
 /* Aloca o espaço para um nó. */
 No* AlocarNo(int ordem);
 
