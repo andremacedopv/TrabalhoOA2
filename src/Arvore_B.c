@@ -27,7 +27,7 @@ int Salvar_No(No *no, int ordem, FILE *arquivo){
 	/* imprime as chaves e os NRR dos registros correspondentes */
 	for(i=0; i<ordem-1; i++){
 		if(i<no->n_ind){
-			fprintf(arquivo, "%s %3d ", no->indice[i].chave, no->indice[i].reg_NRR);
+			fprintf(arquivo, "%s %03d ", no->indice[i].chave, no->indice[i].reg_NRR);
 		}
 		else{
 			fprintf(arquivo, "############ ");
@@ -35,7 +35,7 @@ int Salvar_No(No *no, int ordem, FILE *arquivo){
 	}
 	/* imprime os NRRs dos filhos */
 	for(i=0; i<ordem; i++){
-		fprintf(arquivo, "%3d ", no->filhos_NRR[i]);
+		fprintf(arquivo, "%03d ", no->filhos_NRR[i]);
 	}
 	fprintf(arquivo, "\n");
 	n++;
@@ -46,7 +46,7 @@ void Salvar_ArvB(ArvB* Arvore, char* nome_arq_ind){
 	FILE *arquivo;
 
 	arquivo = fopen(nome_arq_ind, "w+");
-	fprintf(arquivo, "%3d\n", Arvore->ordem);
+	fprintf(arquivo, "%03d\n", Arvore->ordem);
 	Salvar_No(Arvore->raiz, Arvore->ordem, arquivo);
 	fclose(arquivo);
 

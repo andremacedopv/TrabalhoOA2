@@ -1,7 +1,7 @@
 IDIR =./include
 
 CC = gcc
-CFLAGS = -g -I$(IDIR) 
+CFLAGS = -g -I$(IDIR) -lm 
 
 ODIR = ./src/obj
 
