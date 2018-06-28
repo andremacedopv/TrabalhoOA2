@@ -28,4 +28,22 @@ int ImprimirNo(No* no, int idx_pai, int idx_atual);
 /* Imprimir árvore no terminal. */
 void ImprimirArvore(ArvB *arv);
 
+/* Ler um nó no arquivo de dados. */
+void LerNo(char* no, int tamanho, FILE* indice);
+
+/* Dividir string em uma chave e um NRR. */
+void CopiarString(char* chave, char* NRR, char* origem, int numero);
+
+/* Descobrir posição do próximo seek. */
+int ProximoSeek(char* no, int local);
+
+/* Ler um registro do arquivo de dados. */
+void LerRegistro(FILE* dados, int NRR, Reg* registro);
+
+/* Buscar um indice no arquivo de indices. */
+int BuscarIndice(char *chave, Reg* registro);
+
+/* Buscar um registro no arquivo de dados. */
+void Buscar_Registro();
+
 #endif

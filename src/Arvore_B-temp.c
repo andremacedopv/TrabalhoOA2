@@ -235,7 +235,7 @@ void LerRegistro(FILE* dados, int NRR, Reg* registro){
 	registro->turma = fgetc(dados);
 }
 
-int BuscarRegistro(char *chave, Reg* registro){
+int BuscarIndice(char *chave, Reg* registro){
 	FILE* indice, *dados;
 	int i;
 	int seeks = 0;
@@ -276,30 +276,44 @@ int BuscarRegistro(char *chave, Reg* registro){
 				NRR = atoi(NRR_s);
 			} /* if */
 			else if(strcmp(chave, temp) < 0){
-				next_seek = ProximoSeek(no, 13*(ordem-1) + i*4);
+				next_seek = ProximoSeek(no, 13*(ordem-1) + i*ordem);
 				if(next_seek == -1){
 					achou = 0;
 					continuar = 0;
 				}
 				else{
 					seeks++;
-					fseek(indice, tell - 56*next_seek, SEEK_SET);
+					fseek(indice, 4 + tam_reg*next_seek, SEEK_SET);
 				}
 				i = ordem;
 			} /* else if */
 			else{
-				if(i == ordem-2){
-					next_seek = ProximoSeek(no, 13*(ordem-1) + (i+1)*4);
+				if(temp[1] != '#'){
+					if(i == ordem-2){
+						next_seek = ProximoSeek(no, 13*(ordem-1) + (i+1)*ordem);
+						if(next_seek == -1){
+							achou = 0;
+							continuar = 0;
+						}
+						else{
+							seeks++;
+							fseek(indice, 4 + tam_reg*next_seek, SEEK_SET);
+						}
+						i = ordem;
+					} /* if */
+				} /* if */
+				else{
+					next_seek = ProximoSeek(no, 13*(ordem-1) + i*ordem);
 					if(next_seek == -1){
 						achou = 0;
 						continuar = 0;
 					}
 					else{
 						seeks++;
-						fseek(indice, tell - 56*next_seek, SEEK_SET);
+						fseek(indice, 4 + tam_reg*next_seek, SEEK_SET);
 					}
 					i = ordem;
-				} /* if */
+				} /* else */
 			} /* else */
 		} /* for */
 	} /* while */
@@ -310,8 +324,38 @@ int BuscarRegistro(char *chave, Reg* registro){
 		fclose(dados);
 	}
 	else{
-		registro = NULL;
+		registro->nome[1] = '#';
 	}
 
+	fclose(indice);
+
 	return seeks;
+}
+
+void Buscar_Registro(){
+	/* Achar chave a ser procurada. */
+	char chave[9];
+	printf("Insira a chave do registro a ser pesquisado:\n");
+	scanf("%8s", chave);
+
+	/* Achar registro. */
+	Reg *registro = (Reg*) malloc(sizeof(Reg));
+	int seeks;
+	seeks = BuscarIndice(chave, registro);
+
+	/* Imprimir resultado. */
+	if(registro->nome[1] == '#'){
+		printf("Registro não encontrado na base de dados.\n");
+		printf("Seeks necessários: %d seeks.\n", seeks);
+	}
+	else{
+		printf("Registro encontrado:\n");
+		printf("Nome: %s\n", registro->nome);
+		printf("Matrícula: %d\n", registro->matricula);
+		printf("Curso: %s\n", registro->curso);
+		printf("Turma: %c\n", registro->turma);
+		printf("Seeks necessários: %d\n\n", seeks);
+	}
+
+	free(registro);
 }

@@ -127,3 +127,11 @@ void Imprimir_Indices(char* nome_arq_ind){
 	}
 	fclose(arquivo);
 }
+
+void ImprimirArquivo(char* nome_arq){
+	FILE *fp = fopen(nome_arq, "r+");
+	int c;
+	while ((c = getc(fp)) != EOF)
+        putchar(c);
+    fclose(fp);
+}
