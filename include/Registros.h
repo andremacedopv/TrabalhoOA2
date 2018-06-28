@@ -13,4 +13,7 @@ void Criar_chave(char* reg, char* chave);
 /* Função provisória */
 void Imprimir_Indices(char* nome_arq_ind);
 
+/* Insere um registro no arquivo de dados e no arquivo de índices */
+void Inserir_Registro(ArvB* Arvore, char* nome_arq, char* nome_arq_ind);
+
 #endif

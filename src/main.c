@@ -12,6 +12,7 @@ int main (){
 	Arvore = Criar_ArvB(ordem);
 
 	Criar_Indices(Arvore, nome_arq, nome_arq_ind);
+//	Inserir_Registro(Arvore, nome_arq, nome_arq_ind);
 	Imprimir_Indices(nome_arq_ind);
 	ImprimirArvore(Arvore);
 

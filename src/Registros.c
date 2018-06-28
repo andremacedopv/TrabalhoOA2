@@ -20,12 +20,12 @@ void Preenche_espacos(char* string, int tam){
 
 void Inserir_Registro(ArvB* Arvore, char* nome_arq, char* nome_arq_ind){
 	FILE* arquivo;
-	char reg[TAM_REG+1], matricula[7], nome[41], curso[4], turma[1];
+	char reg[TAM_REG+1], matricula[8], nome[42], curso[5], turma[2];
 	char chave[TAM_CHAVE];
 	int tamanho, NRR;
 
 	printf("Insira a matricula:\n");
-	scanf("%5s", matricula);
+	scanf("\n%5s", matricula);
 	printf("\n");
 	printf("Insira o nome:\n");
 	scanf("\n%40[^\n]", nome);
@@ -34,20 +34,20 @@ void Inserir_Registro(ArvB* Arvore, char* nome_arq, char* nome_arq_ind){
 	scanf("%3s", curso);
 	printf("\n");
 	printf("Insira a turma:\n");
-	scanf("%s", turma);
+	scanf("%1s", turma);
 	printf("\n");
 
 	//preenche os vetores com espaço
-	Preenche_espacos(nome, 41);   
-	Preenche_espacos(matricula, 7);
-	Preenche_espacos(curso, 4);
-	Preenche_espacos(turma, 1);
+	Preenche_espacos(nome, 42);   
+	Preenche_espacos(matricula, 8);
+	Preenche_espacos(curso, 5);
+	Preenche_espacos(turma, 2);
 
 	/* concatena os campos do registro */
 	strcpy(reg, nome);
-	strncat(reg, matricula, 7);
-	strncat(reg, curso, 4);
-	strncat(reg, turma, 1);
+	strncat(reg, matricula, 8);
+	strncat(reg, curso, 5);
+	strncat(reg, turma, 2);
 
 	arquivo = fopen(nome_arq, "r+");
 	fseek(arquivo, 0, SEEK_END);
@@ -58,8 +58,7 @@ void Inserir_Registro(ArvB* Arvore, char* nome_arq, char* nome_arq_ind){
 
 	Criar_chave(reg, chave);
 	InserirItem(Arvore, chave, NRR);
-	Criar_Indices(Arvore, nome_arq, nome_arq_ind);
-
+	Salvar_ArvB(Arvore, nome_arq_ind);
 }
 
 /*
@@ -123,7 +122,7 @@ void Imprimir_Indices(char* nome_arq_ind){
 
 	fgetc(arquivo);
 	while(fgets(pag, TAM_PAG+2, arquivo)!= NULL){
-		printf("%3d %s", NRR, pag);
+		printf("%03d %s", NRR, pag);
 		NRR ++;
 	}
 	fclose(arquivo);

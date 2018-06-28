@@ -15,15 +15,20 @@ ArvB* Criar_ArvB(int ordem){
 }
 
 int Salvar_No(No *no, int ordem, FILE *arquivo){
-	int i;
-	static int n = -1;
+	int i, NRR, tamanho, TAM_PAG;
 
+	if(no == NULL){
+		return -01;
+	}
 	/* Chama a função recursivamente para os filhos */
 	if(no->n_filhos != 0){
 		for(i=0; i<no->n_filhos; i++){
 			no->filhos_NRR[i] = Salvar_No(no->filho[i], ordem, arquivo);
 		}
 	}	
+	TAM_PAG = (ordem - 1)*(TAM_CHAVE + TAM_NRR) + ordem*TAM_NRR;
+	tamanho = ftell(arquivo);
+	NRR = (tamanho - 3) / TAM_PAG;
 	/* imprime as chaves e os NRR dos registros correspondentes */
 	for(i=0; i<ordem-1; i++){
 		if(i<no->n_ind){
@@ -38,8 +43,8 @@ int Salvar_No(No *no, int ordem, FILE *arquivo){
 		fprintf(arquivo, "%03d ", no->filhos_NRR[i]);
 	}
 	fprintf(arquivo, "\n");
-	n++;
-	return n;
+	return NRR;
+
 }
 
 void Salvar_ArvB(ArvB* Arvore, char* nome_arq_ind){
