@@ -56,57 +56,169 @@ void Salvar_ArvB(ArvB* Arvore, char* nome_arq_ind){
 	fclose(arquivo);
 
 }
+//RemoverItem()
 
-void Ler_No(int NRR, int ordem, char *nome_arq){ //incompleta
-	FILE* arquivo;
-	char chave[TAM_CHAVE];
-	int reg_NRR, i, filhos_NRR[ordem], n_filhos;
-	Ind indice[ordem-1];
-
-	arquivo = fopen(nome_arq, "r+");
-	fseek(arquivo, NRR, SEEK_SET);
-	/* Le as chaves e os NRRs dos registros correspondentes */
-	for (i=0; i<ordem - 1; i++){
-
-		if(1){
-			fgets(chave, TAM_CHAVE, arquivo);
-			fscanf(arquivo, "%d", &reg_NRR);
-			strcpy(indice[i].chave, chave);
-			indice[i].reg_NRR = reg_NRR;
-		}	
+void RemoverNoFolha(No* no, int idx){
+	/* Move todos os índices após idx par tras*/
+	for(int i=idx+1; i<no->n_ind; i++){
+		strcpy(no->indice[i-1].chave, no->indice[i].chave);
+		no->indice[i-1].reg_NRR = no->indice[i].reg_NRR;
 	}
-//	/* Le os NRRs dos filhos */
-	n_filhos = 0;
-	for(i=0; i<ordem; i++){
-		fscanf(arquivo, "%d", &filhos_NRR[i]);
-		if(filhos_NRR[i] != -1){
-			n_filhos ++;
+	no->n_ind--;
+
+	return;
+}
+
+/*
+//idx nesse caso é o índice do n
+void RemoverNaoFolha(No* no, int ordem, int idx){
+	int minimo;
+	Ind pred, suc;
+
+	minimo = (ordem/2 -1);
+	if(no->filho[idx]->n_ind >= minimo){
+		pred = PegarPred(no->filho[idx]);
+		strcpy(no->indice[idx].chave, pred.chave);
+		no->indice[idx].reg_NRR = pred.reg_NRR;
+	///	RemoverItem(no->filho[idx-1], chave);
+	}
+	else if(no->filho[idx+1]->n_ind >= minimo){
+		suc = PegarSuc(no->filho[idx+1]);
+		strcpy(no->indice[idx+1].chave, suc.chave);
+		no->indice[idx].reg_NRR = suc.reg_NRR;
+	///	RemoverItem(no->filho[idx+1], chave);
+	}
+	else{
+	///	Merge()
+	///	RemoverItem(no, chave)
+	}
+	return;
+} */
+
+Ind PegarPred(No* no){
+	No* aux;
+
+	/* Percorre a árvore até chegar em um nó folha */
+	aux = no;
+	while(aux->n_filhos != 0){
+		aux = aux->filho[aux->n_filhos-1];
+	}
+
+	/* retorna o último índice do nó folha */
+	return aux->indice[aux->n_ind-1];
+}
+
+Ind PegarSuc(No* no){
+	No* aux;
+
+	/* Percorre a árvore até chegar em um nó folha */
+	aux = no;
+	while(aux->n_filhos != 0){
+		aux = aux->filho[0];
+	}
+
+	/* retorna o primeiro índice do nó folha */
+	return aux->indice[0];	
+}
+//PreencherNo()
+
+void PedirEmprestadoAnt(No* pai, int idx){
+	No *filho1, *filho2;
+
+	filho1 = pai->filho[idx];
+	filho2 = pai->filho[idx-1];
+
+	/* Move todos os índices para frente*/
+	for(int i=pai->n_ind-1; i>=0; i--){
+		strcpy(pai->indice[i+1].chave, pai->indice[i].chave);
+		pai->indice[i+1].reg_NRR = pai->indice[i].reg_NRR;
+	}
+
+	/* Se não for folha, move para frente todos os ponteiros 
+	para os filhos */
+	if(pai->n_filhos != 0){
+		for(int i=pai->n_filhos-1; i>0; i--){
+			pai->filho[i+1] = pai->filho[i];
+			pai->filhos_NRR[i+1] = pai->filhos_NRR[i];
 		}
 	}
-	fclose(arquivo);
+
+	/* Move para o filho1 o índice[idx-1] do no pai */
+	strcpy(filho1->indice[0].chave, pai->indice[idx-1].chave);
+	filho1->indice[0].reg_NRR = pai->indice[idx-1].reg_NRR;
+
+	/* Move o último filho do filho2 para o primeiro do filho1 */
+	if(filho1->n_filhos != 0){
+		filho1->filho[0] = filho2->filho[filho2->n_filhos-1];
+		filho1->filhos_NRR[0] = filho2->filhos_NRR[filho2->n_filhos-1];	
+	}
+
+	/* Move o índicee do filho2 para o pai */
+	strcpy(pai->indice[idx-1].chave, filho2->indice[filho2->n_filhos-2].chave);
+	pai->indice[idx-1].reg_NRR = filho2->indice[filho2->n_filhos-2].reg_NRR;
+
+	filho1->n_filhos += 1;
+	filho2->n_filhos -= 1;
+
+	return;
+}
+
+void PedirEmprestadoProx(No* pai, int idx){
+	No *filho1, *filho2;
+
+	filho1 = pai->filho[idx];
+	filho2 = pai->filho[idx-1];
+
+	strcpy(filho1->indice[filho1->n_ind-1].chave, pai->indice[idx].chave);
+	filho1->indice[filho1->n_ind-1].reg_NRR = pai->indice[idx].reg_NRR;
+
+	/* Insere o ultimo filho de filho2 no primeiro de filho1*/
+	if(filho1->n_filhos == 0){
+		filho1->filho[filho1->n_filhos] = filho2->filho[0];
+	}
+
+	strcpy(pai->indice[idx].chave, filho2->indice[0].chave);
+	pai->indice[idx].reg_NRR = filho2->indice[0].reg_NRR;
+
+	/* Move todos os índices do filho2 para tras */
+	for(int i=1; i<filho2->n_filhos; i++){
+		strcpy(filho2->indice[i-1].chave, filho2->indice[i].chave);
+		filho2->indice[i-1].reg_NRR = filho2->indice[i].reg_NRR;
+	}
+
+	/* Move todos os ponteiros para filhos de filho2 para tras */
+	if(filho2->n_filhos != 0){
+		for(int i=1; i<filho2->n_filhos; i++){
+			filho2->filho[i-1] = filho2->filho[i];
+			filho2->filhos_NRR[i-1] = filho2->filhos_NRR[i];
+		}
+	}
+
+	filho1->n_filhos += 1;
+	filho2->n_filhos -=1;
+
+	return;
+
+}
+
+//Merge()
+
+/* Função que retorna o o indice da primeira chave
+maior ou igual a chave buscada */
+int EncontrarChave(No* no, char* chave){
+	Ind aux;
+	int idx = 0;
+
+	aux = no->indice[idx];
+	while(strcmp(aux.chave, chave) < 0){
+		idx++;
+	}
+	return idx;
 }
 
 
-int Busca(No* no, int ordem, char *chave, char *nome_arq){ //incompleta
-	int i = 0;
-//	No* no_filho;
 
-	while(i < no->n_ind && strcmp(chave, no->indice[i].chave) > 0){
-		i++;
-	}
 
-	if(strcmp(chave, no->indice[i].chave) == 0){
-		return no->indice[i].reg_NRR;
-	}
-
-	if(no->n_filhos == 0){
-		return -1;
-	}
-	//Ler_No(no->filhos_NRR[i], ordem, nome_arq);
-
-	//return Busca(no_filho, ordem, chave, nome_arq);
-	return 1;
-}
 
 
 

@@ -116,11 +116,11 @@ void InserirNaoCheio(No* no, char chave[], int reg_NRR, int ordem){
 		while(i >=0 && strcmp(no->indice[i].chave, chave) > 0){
 			i--;
 		}
-		/* Ver se o filho que vai seceber o novo nó está cheio. */
+		/* Ver se o filho que vai receber o novo nó está cheio. */
 		if(no->filho[i+1]->n_ind == ordem-1){
 			DividirFilho(no, no->filho[i+1], i+1, ordem);
 
-			/* Ver onde será inserifa a nova chave. */
+			/* Ver onde será inserida a nova chave. */
 			if(strcmp(no->indice[i+1].chave, chave)<0)
 				i++;
 		}
