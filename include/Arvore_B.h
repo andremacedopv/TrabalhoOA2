@@ -38,4 +38,24 @@ int Salvar_No(No* no, int ordem, FILE *arquivo);
 /* Salva uma árvore B em um arquivo */
 void Salvar_ArvB(ArvB* Arvore, char* nome_arq_ind);
 
+int EncontrarChave(No* no, char* chave);
+
+void Merge(No* no, int ordem, int idx);
+
+void PedirEmprestadoProx(No* no, int idx);
+
+void PedirEmprestadoAnt(No* no, int idx);
+
+void PreencherNo(No* no, int ordem, int idx);
+
+Ind PegarSuc(No* no);
+
+Ind PegarPred(No* no);
+
+void RemoverNaoFolha(No* no, int ordem, int idx);
+
+void RemoverFolha(No* no, int idx);
+
+void RemoverItem(No* no, int ordem, char* chave);
+
 #endif

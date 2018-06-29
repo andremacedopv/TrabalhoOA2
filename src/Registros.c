@@ -63,8 +63,9 @@ void Inserir_Registro(ArvB* Arvore, char* nome_arq, char* nome_arq_ind){
 
 /*
 void Remover_Registro(ArvB* Arvore, char* chave, char* nome_arq, char* nome_arq_ind){
+	FILE* arquivo;
+	//printf("")
 
-	printf("")
 
 }*/
 
