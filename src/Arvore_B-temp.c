@@ -381,3 +381,91 @@ void Buscar_Registro(){
 
 	free(registro);
 }
+
+int AcharNRR(char *chave){
+	FILE* indice;
+	int i;
+	/* Abrir arquivo de índice. */
+	indice = fopen("indicelista.bt", "r+");
+
+	/* Pegar ordem da arvore. */
+	char ordem_s[4];
+	ordem_s[3] = '\0';
+	for(i=0; i < 3; i++)
+		ordem_s[i] = fgetc(indice);
+	int ordem = atoi(ordem_s);
+
+	/* Descobir tamanho do registro.*/
+	int tam_reg = (ordem-1)*13 + ordem*4 + 1;
+
+	/* Descobrir raiz. */
+	fseek(indice, 0, SEEK_END);
+	long int tell = ftell(indice);
+	fseek(indice, tell - tam_reg, SEEK_SET);
+
+	/* Achar registro. */
+	int NRR, next_seek;
+	char temp[TAM_CHAVE], NRR_s[4], no[tam_reg+1];
+	temp[TAM_CHAVE-1] = '\0';
+	NRR_s[3] = '\0';
+	int achou = 0;
+	int continuar = 1;
+	while(continuar){
+		LerNo(no, tam_reg, indice);
+		for(i=0; i < ordem-1; i++){
+			CopiarString(temp, NRR_s, no, i);
+			if(strcmp(chave, temp) == 0){
+				achou = 1;
+				continuar = 0;
+				i = ordem;
+				NRR = atoi(NRR_s);
+			} /* if */
+			else if(strcmp(chave, temp) < 0){
+				next_seek = ProximoSeek(no, 13*(ordem-1) + i*ordem);
+				if(next_seek == -1){
+					achou = 0;
+					continuar = 0;
+				}
+				else{
+					fseek(indice, 4 + tam_reg*next_seek, SEEK_SET);
+				}
+				i = ordem;
+			} /* else if */
+			else{
+				if(temp[1] != '#'){
+					if(i == ordem-2){
+						next_seek = ProximoSeek(no, 13*(ordem-1) + (i+1)*ordem);
+						if(next_seek == -1){
+							achou = 0;
+							continuar = 0;
+						}
+						else{
+							fseek(indice, 4 + tam_reg*next_seek, SEEK_SET);
+						}
+						i = ordem;
+					} /* if */
+				} /* if */
+				else{
+					next_seek = ProximoSeek(no, 13*(ordem-1) + i*ordem);
+					if(next_seek == -1){
+						achou = 0;
+						continuar = 0;
+					}
+					else{
+						fseek(indice, 4 + tam_reg*next_seek, SEEK_SET);
+					}
+					i = ordem;
+				} /* else */
+			} /* else */
+		} /* for */
+	} /* while */
+
+	fclose(indice);
+
+	if(achou){
+		return NRR;
+	}
+	else{
+		return -1;
+	}
+}

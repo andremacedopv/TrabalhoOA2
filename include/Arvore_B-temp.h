@@ -52,4 +52,7 @@ int BuscarIndice(char *chave, Reg* registro);
 /* Buscar um registro no arquivo de dados. */
 void Buscar_Registro();
 
+/* Função que encontra o NRR de um registro no arquivo de dados. */
+int AcharNRR(char *chave);
+
 #endif
