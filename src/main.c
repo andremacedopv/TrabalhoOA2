@@ -75,7 +75,8 @@ int main(){
 
     		case SAIR:
     			/* LIberar arvore. */
-        		continuar = 0;
+          LiberarArvore(Arvore);
+        	continuar = 0;
     		break;
 
     		default:

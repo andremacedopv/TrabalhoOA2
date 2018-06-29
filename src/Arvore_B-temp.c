@@ -4,6 +4,28 @@
 #include "Arvore_B.h"
 #include "Arvore_B-temp.h"
 
+void LiberarNo(No* no){
+	int i;
+	/* Liberar filhos. */
+	for(i=0; i<no->n_filhos; i++){
+		LiberarNo(no->filho[i]);
+	}
+
+	/* Libear no. */
+	free(no->indice);
+	free(no->filho);
+	free(no->filhos_NRR);
+	free(no);
+}
+
+void LiberarArvore(ArvB* arvore){
+	/* Libera raiz. */
+	LiberarNo(arvore->raiz);
+
+	/* Liberar arvore. */
+	free(arvore);
+}
+
 No* AlocarNo(int ordem){
 	/* Alocar no e vetores de indices e filhos. */
 	No* no = (No*) malloc(sizeof(No));

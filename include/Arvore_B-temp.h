@@ -10,6 +10,12 @@ typedef struct reg{
 	char turma;
 }Reg;
 
+/* Liberar no da arvore. */
+void LiberarNo(No* no);
+
+/* Libear arvore. */
+void LiberarArvore(ArvB* arvore);
+
 /* Aloca o espaço para um nó. */
 No* AlocarNo(int ordem);
 
