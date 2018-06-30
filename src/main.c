@@ -11,6 +11,11 @@
 #define IMPRIMIR_DAD 6
 
 int main(){
+
+  printf("\n#########################################################\n");
+  printf("#        Trabalho 2 - Organização de Arquivos           #\n");
+  printf("#########################################################\n\n");
+
 	/* Prguntar para o usuário qual a ordem a ser utilizada. */
  	int ordem;
     char chave[9];
@@ -18,9 +23,11 @@ int main(){
  	do{
 		printf("Digite a ordem da Árvore-B:\n");
     scanf("%d", &ordem);
-    if(ordem%2 != 0 || ordem < 3)
+    if(ordem < 3)
       printf("ERRO: Digite uma ordem par maior do que 3.\n");
- 	}while(ordem < 4 || ordem%2 != 0);
+    if(ordem%2 != 0)
+      printf("ATENÇÂO: ordens ímpares não são garantidas de funcionarem corretamente. De preferência a ordens pares.\n"); 
+ 	}while(ordem < 4);
 
 	/* Ler os dados e criar a árvore e o arquivo de indíce. */
 	char nome_arq[] = "lista.txt";
@@ -63,7 +70,7 @@ int main(){
       			Salvar_ArvB(Arvore, nome_arq_ind);
       			Imprimir_Indices(nome_arq_ind);
       			ImprimirArvore(Arvore);
-       			//Remover_Registro();
+       			Remover_Registro(Arvore, chave);
     		break;
 
     		case BUSCAR:

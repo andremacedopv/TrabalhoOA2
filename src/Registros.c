@@ -61,13 +61,20 @@ void Inserir_Registro(ArvB* Arvore, char* nome_arq, char* nome_arq_ind){
 	Salvar_ArvB(Arvore, nome_arq_ind);
 }
 
-/*
-void Remover_Registro(ArvB* Arvore, char* chave, char* nome_arq, char* nome_arq_ind){
-	FILE* arquivo;
-	//printf("")
 
+void Remover_Registro(ArvB* Arvore, char* chave){
+	/* Descobrir NRR do registro no arquivo de dados. */
+	int NRR = AcharNRR(chave);
 
-}*/
+	/* Abrir arquivo na posição do registro a ser eliminado. */
+	FILE* arquivo = fopen("lista.txt", "r+");
+	fseek(arquivo, TAM_REG*NRR, SEEK_SET);
+
+	/* Imprimir o indicador de registro eliminado. */
+	fprintf(arquivo, "#");
+
+	fclose(arquivo);
+}
 
 void Criar_chave(char* reg, char* chave){
 	int i, j;

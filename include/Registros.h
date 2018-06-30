@@ -9,6 +9,9 @@ void Preenche_espacos(char* string, int tam);
 /* Função que insere um novo registro. */
 void Inserir_Registro(ArvB* Arvore, char* nome_arq, char* nome_arq_ind);
 
+/* Função que remove um registro. */
+void Remover_Registro(ArvB* Arvore, char* chave);
+
 /* Cria indices a partir de um arquivo de dados no formato de árvore B */
 void Criar_Indices(ArvB* Arvore, char* nome_arq, char* nome_arq_ind);
 
