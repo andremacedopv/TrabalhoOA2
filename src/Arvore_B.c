@@ -58,6 +58,14 @@ void Salvar_ArvB(ArvB* Arvore, char* nome_arq_ind){
 
 }
 
+void RemoverArvB(ArvB* Arvore, char* chave){
+
+	RemoverItem(Arvore->raiz, Arvore->ordem, chave);
+	if(Arvore->raiz->n_ind == 0){
+		Arvore->raiz = Arvore->raiz->filho[0];
+	}
+}
+
 void RemoverItem(No* no, int ordem, char* chave){
 	int idx = EncontrarChave(no, chave);
 	int minimo =(ordem/2 - 1);
@@ -96,16 +104,6 @@ void RemoverItem(No* no, int ordem, char* chave){
 	return;
 }
 
-/*
-void RemoveFilho(No* pai, int idx){
-
-	for(int i=idx+1; i<pai->n_filhos; i++){
-		pai->filho[i-1] = pai->filho[i];
-		pai->filhos_NRR[i-1] = pai->filhos_NRR[i];
-	}
-}
-*/
-
 
 void RemoverFolha(No* no, int idx){
 	/* Move todos os índices após idx par tras*/
@@ -118,24 +116,22 @@ void RemoverFolha(No* no, int idx){
 	return;
 }
 
-
-//idx nesse caso é o índice do n
 void RemoverNaoFolha(No* no, int ordem, int idx){
 	int minimo;
 	Ind pred, suc;
 
 	minimo = (ordem/2 - 1);
-	if(no->filho[idx+1]->n_ind >= minimo){
+	if(no->filho[idx+1]->n_ind > minimo){
 		suc = PegarSuc(no->filho[idx+1]);
 		strcpy(no->indice[idx].chave, suc.chave);
 		no->indice[idx].reg_NRR = suc.reg_NRR;
 		RemoverItem(no->filho[idx+1], ordem, suc.chave);
 	}
-	else if(no->filho[idx]->n_ind >= minimo){
+	else if(no->filho[idx]->n_ind > minimo){
 		pred = PegarPred(no->filho[idx]);
 		strcpy(no->indice[idx].chave, pred.chave);
 		no->indice[idx].reg_NRR = pred.reg_NRR;
-		RemoverItem(no->filho[idx-1], ordem,  pred.chave);
+		RemoverItem(no->filho[idx], ordem,  pred.chave);
 	}
 	else{
 		Merge(no, ordem, idx);
@@ -184,11 +180,11 @@ void PreencherNo(No* no, int ordem, int idx){
 	}
 	/* Merge com o seu irmão */
 	else{
-		/* Se for o ultimo filho, mescla com o proximo irmão*/
+		/* Se não for o ultimo filho, mescla com o proximo irmão*/
 		if(idx != no->n_ind){
 			Merge(no, ordem, idx);
 		}
-		/* Se não, mescla com o anterior */
+		/* Se for, mescla com o anterior */
 		else{	
 			Merge(no, ordem, idx-1);
 		}
@@ -212,7 +208,7 @@ void PedirEmprestadoAnt(No* no, int idx){
 	/* Se não for folha, move para frente todos os ponteiros 
 	para os filhos */
 	if(filho1->n_filhos != 0){                           
-		for(int i=filho1->n_filhos-1; i>=0; i--){         ////////////////////////////////
+		for(int i=filho1->n_filhos-2; i>=0; i--){        
 			filho1->filho[i+1] = filho1->filho[i];
 			filho1->filhos_NRR[i+1] = filho1->filhos_NRR[i];
 		}
@@ -226,6 +222,9 @@ void PedirEmprestadoAnt(No* no, int idx){
 	if(filho1->n_filhos != 0){
 		filho1->filho[0] = filho2->filho[filho2->n_filhos-1];
 		filho1->filhos_NRR[0] = filho2->filhos_NRR[filho2->n_filhos-1];	
+		filho2->filhos_NRR[filho2->n_filhos-1] = -01;
+		filho1->n_filhos ++;
+		filho2->n_filhos --;
 	}
 
 	/* Move o índice do filho2 para o no */
@@ -244,14 +243,17 @@ void PedirEmprestadoProx(No* no, int idx){
 	filho1 = no->filho[idx];
 	filho2 = no->filho[idx+1];
 
-	strcpy(filho1->indice[filho1->n_ind-1].chave, no->indice[idx].chave);
-	filho1->indice[filho1->n_ind-1].reg_NRR = no->indice[idx].reg_NRR;
+	/* Copia indice[idx] do no para o ultimo indice do filho1 */
+	strcpy(filho1->indice[filho1->n_ind].chave, no->indice[idx].chave);
+	filho1->indice[filho1->n_ind].reg_NRR = no->indice[idx].reg_NRR;
 
 	/* Insere o ultimo filho de filho2 no primeiro de filho1*/
-	if(filho1->n_filhos == 0){
+	if(filho1->n_filhos != 0){
 		filho1->filho[filho1->n_filhos] = filho2->filho[0];
+		filho1->filhos_NRR[filho1->n_filhos] = filho2->filhos_NRR[0];
 	}
 
+	/* Copia o ultimo filho de filho2 para o primeiro de filho1 */
 	strcpy(no->indice[idx].chave, filho2->indice[0].chave);
 	no->indice[idx].reg_NRR = filho2->indice[0].reg_NRR;
 
@@ -267,6 +269,9 @@ void PedirEmprestadoProx(No* no, int idx){
 			filho2->filho[i-1] = filho2->filho[i];
 			filho2->filhos_NRR[i-1] = filho2->filhos_NRR[i];
 		}
+		filho2->filhos_NRR[filho2->n_filhos-1] = -01;
+		filho1->n_filhos ++;
+		filho2->n_filhos --;
 	}
 
 	filho1->n_ind += 1;
@@ -312,10 +317,15 @@ void Merge(No* no, int ordem, int idx){
 
 	/* Atualiza o número de chaves do nó atual */
 	filho1->n_ind += filho2->n_ind+1;
+	filho1->n_filhos += filho2->n_filhos;
 	no->n_ind --;
+	no->n_filhos --;
+	no->filhos_NRR[idx+1] = -01;
+	no->filhos_NRR[idx+1] = -01;
 
 	/* Desaloca filho2 */
-	LiberarNo(filho2);
+//	LiberarNo(filho2);
+
 	return;
 }
 

@@ -63,14 +63,9 @@ int main(){
    	     	break;
 
       		case REMOVER:
-	      		ImprimirArvore(Arvore);
-      			printf("Insira uma chave:\n");
-      			scanf("%8s", chave);
-      			RemoverItem(Arvore->raiz, Arvore->ordem, chave);
-      			Salvar_ArvB(Arvore, nome_arq_ind);
+       			Remover_Registro(Arvore, nome_arq, nome_arq_ind);
       			Imprimir_Indices(nome_arq_ind);
       			ImprimirArvore(Arvore);
-       			Remover_Registro(Arvore, chave);
     		break;
 
     		case BUSCAR:
@@ -91,8 +86,8 @@ int main(){
 
     		case SAIR:
     			/* LIberar arvore. */
-          LiberarArvore(Arvore);
-        	continuar = 0;
+         	 	LiberarArvore(Arvore);
+        		continuar = 0;
     		break;
 
     		default:
