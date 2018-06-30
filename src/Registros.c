@@ -67,8 +67,6 @@ void Remover_Registro(ArvB* Arvore, char* nome_arq, char* nome_arq_ind){
 
 	printf("Para remover insira uma chave:\n");
     scanf("%8s", chave);
-   	RemoverArvB(Arvore, chave);
-    Salvar_ArvB(Arvore, nome_arq_ind);
 
 	/* Descobrir NRR do registro no arquivo de dados. */
 	int NRR = AcharNRR(chave);
@@ -81,6 +79,9 @@ void Remover_Registro(ArvB* Arvore, char* nome_arq, char* nome_arq_ind){
 	fprintf(arquivo, "#");
 
 	fclose(arquivo);
+	
+   	RemoverArvB(Arvore, chave);
+    Salvar_ArvB(Arvore, nome_arq_ind);
 }
 
 void Criar_chave(char* reg, char* chave){

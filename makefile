@@ -7,10 +7,10 @@ ODIR = ./src/obj
 
 SDIR = ./src
 
-_DEPS = Arvore_B.h Arvore_B-temp.h Registros.h
+_DEPS = Arvore_B.h Registros.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = Arvore_B.o Arvore_B-temp.o Registros.o main.o
+_OBJ = Arvore_B.o Registros.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 all: main

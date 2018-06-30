@@ -1,7 +1,7 @@
 #ifndef REGISTRO_
 #define REGISTRO_
+
 #include "Arvore_B.h"
-#include "Arvore_B-temp.h"
 
 /* Função que completa um string com espaços. */
 void Preenche_espacos(char* string, int tam);

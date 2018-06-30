@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/Registros.h"
+#include "../include/Arvore_B.h"
 
 #define SAIR 0
 #define INCLUIR 1
@@ -18,7 +19,6 @@ int main(){
 
 	/* Prguntar para o usuário qual a ordem a ser utilizada. */
  	int ordem;
-    char chave[9];
 
  	do{
 		printf("Digite a ordem da Árvore-B:\n");
@@ -38,7 +38,6 @@ int main(){
 
   	printf("Árvore e indices criados. Imprimindo árvore...\n\n");
   	ImprimirArvore(Arvore);
-  	printf("\n");
 
 	/* Perguntar o que o usuário deseja fazer. */
   	int continuar = 1;
@@ -64,8 +63,10 @@ int main(){
 
       		case REMOVER:
        			Remover_Registro(Arvore, nome_arq, nome_arq_ind);
+            printf("\n");
       			Imprimir_Indices(nome_arq_ind);
-      			ImprimirArvore(Arvore);
+      			printf("\n");
+            ImprimirArvore(Arvore);
     		break;
 
     		case BUSCAR:
