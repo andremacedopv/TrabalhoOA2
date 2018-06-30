@@ -72,28 +72,40 @@ void RemoverItem(No* no, int ordem, char* chave){
 		}
 	}
 	else{
-		/* Se o nó for folha a chave não está no nó */
+		/* Se o nó for folha a chave não está no arvore*/
 		if(no->n_filhos == 0){
 			return;
 		}
 
 		flag = ( (idx==no->n_ind)? 1:0);
 
-		/* Preenche a chave se o no filho em que ela deveria estar tiver
+		/* Preenche se for o filho em que a chave deveria estar e ele tiver
 		n_ind < minimo */
-		if(no->filho[idx]->n_ind < minimo){
-			PreencherNo(no, ordem, idx);
-		}
 
 		if (flag && idx > no->n_ind){
 			RemoverItem(no->filho[idx-1], ordem, chave);
+			
 		}
 		else{
-			RemoverItem(no->filho[idx-1], ordem, chave);
+			RemoverItem(no->filho[idx], ordem, chave);
+		}
+		if(no->filho[idx]->n_ind < minimo && no->filho[idx]->n_ind > 0){
+			PreencherNo(no, ordem, idx);
 		}
 	}
 	return;
 }
+
+/*
+void RemoveFilho(No* pai, int idx){
+
+	for(int i=idx+1; i<pai->n_filhos; i++){
+		pai->filho[i-1] = pai->filho[i];
+		pai->filhos_NRR[i-1] = pai->filhos_NRR[i];
+	}
+}
+*/
+
 
 void RemoverFolha(No* no, int idx){
 	/* Move todos os índices após idx par tras*/
@@ -112,18 +124,18 @@ void RemoverNaoFolha(No* no, int ordem, int idx){
 	int minimo;
 	Ind pred, suc;
 
-	minimo = (ordem/2 -1);
-	if(no->filho[idx]->n_ind >= minimo){
+	minimo = (ordem/2 - 1);
+	if(no->filho[idx+1]->n_ind >= minimo){
+		suc = PegarSuc(no->filho[idx+1]);
+		strcpy(no->indice[idx].chave, suc.chave);
+		no->indice[idx].reg_NRR = suc.reg_NRR;
+		RemoverItem(no->filho[idx+1], ordem, suc.chave);
+	}
+	else if(no->filho[idx]->n_ind >= minimo){
 		pred = PegarPred(no->filho[idx]);
 		strcpy(no->indice[idx].chave, pred.chave);
 		no->indice[idx].reg_NRR = pred.reg_NRR;
 		RemoverItem(no->filho[idx-1], ordem,  pred.chave);
-	}
-	else if(no->filho[idx+1]->n_ind >= minimo){
-		suc = PegarSuc(no->filho[idx+1]);
-		strcpy(no->indice[idx+1].chave, suc.chave);
-		no->indice[idx].reg_NRR = suc.reg_NRR;
-		RemoverItem(no->filho[idx+1], ordem, suc.chave);
 	}
 	else{
 		Merge(no, ordem, idx);
@@ -160,15 +172,15 @@ Ind PegarSuc(No* no){
 void PreencherNo(No* no, int ordem, int idx){
 	int minimo;
 
-	minimo = (ordem/2 -1);
+	minimo = (ordem/2 - 1);
 
 	/* Se o filho anterior tiver mais que o minimo-1 indices pega emprestado com ele */
-	if(idx!=0 && no->filho[idx - 1]->n_ind >= minimo){
-		PedirEmprestadoProx(no, idx);
+	if(idx!=0 && no->filho[idx - 1]->n_ind > minimo){
+		PedirEmprestadoAnt(no, idx);
 	}
 	/* Se o proximo filho tiver mais que o minimo-1 indices pega emprestado com ele */
-	else if(idx != no->n_ind && no->filho[idx+1]->n_ind >= minimo){
-		PedirEmprestadoAnt(no, idx);
+	else if(idx != no->n_ind && no->filho[idx+1]->n_ind > minimo){
+		PedirEmprestadoProx(no, idx);
 	}
 	/* Merge com o seu irmão */
 	else{
@@ -192,17 +204,17 @@ void PedirEmprestadoAnt(No* no, int idx){
 	filho2 = no->filho[idx-1];
 
 	/* Move todos os índices para frente*/
-	for(int i=no->n_ind-1; i>=0; i--){
-		strcpy(no->indice[i+1].chave, no->indice[i].chave);
-		no->indice[i+1].reg_NRR = no->indice[i].reg_NRR;
+	for(int i=filho1->n_ind-1; i>=0; i--){
+		strcpy(filho1->indice[i+1].chave, filho1->indice[i].chave);
+		filho1->indice[i+1].reg_NRR = filho1->indice[i].reg_NRR;
 	}
 
 	/* Se não for folha, move para frente todos os ponteiros 
 	para os filhos */
-	if(no->n_filhos != 0){
-		for(int i=no->n_filhos-1; i>0; i--){
-			no->filho[i+1] = no->filho[i];
-			no->filhos_NRR[i+1] = no->filhos_NRR[i];
+	if(filho1->n_filhos != 0){                           
+		for(int i=filho1->n_filhos-1; i>=0; i--){         ////////////////////////////////
+			filho1->filho[i+1] = filho1->filho[i];
+			filho1->filhos_NRR[i+1] = filho1->filhos_NRR[i];
 		}
 	}
 
@@ -217,8 +229,8 @@ void PedirEmprestadoAnt(No* no, int idx){
 	}
 
 	/* Move o índice do filho2 para o no */
-	strcpy(no->indice[idx-1].chave, filho2->indice[filho2->n_filhos-2].chave);
-	no->indice[idx-1].reg_NRR = filho2->indice[filho2->n_filhos-2].reg_NRR;
+	strcpy(no->indice[idx-1].chave, filho2->indice[filho2->n_ind-1].chave);
+	no->indice[idx-1].reg_NRR = filho2->indice[filho2->n_ind-1].reg_NRR;
 
 	filho1->n_ind += 1;
 	filho2->n_ind -= 1;
@@ -230,7 +242,7 @@ void PedirEmprestadoProx(No* no, int idx){
 	No *filho1, *filho2;
 
 	filho1 = no->filho[idx];
-	filho2 = no->filho[idx-1];
+	filho2 = no->filho[idx+1];
 
 	strcpy(filho1->indice[filho1->n_ind-1].chave, no->indice[idx].chave);
 	filho1->indice[filho1->n_ind-1].reg_NRR = no->indice[idx].reg_NRR;
@@ -287,13 +299,13 @@ void Merge(No* no, int ordem, int idx){
 	}
 
 	/* Move os indices do no atual a partir de idx+1
-	 um passo para frente */
+	 um passo para tras */
 	for(int i=idx+1; i<no->n_ind; i++){
 		strcpy(no->indice[i-1].chave, no->indice[i].chave);
 		no->indice[i-1].reg_NRR = no->indice[i].reg_NRR;
 	}
 	/* Move os ponteiros para os filhos do nó atual a partir de idx+2
-	um passo para frente */
+	um passo para tras */
 	for(int i=idx+2; i<no->n_filhos; i++){
 		no->filho[i-1] = no->filho[i];
 	}
@@ -312,7 +324,7 @@ maior ou igual a chave buscada */
 int EncontrarChave(No* no, char* chave){
 	int idx = 0;
 
-	while(strcmp(no->indice[idx].chave, chave) < 0){
+	while(strcmp(no->indice[idx].chave, chave) < 0 && idx < no->n_ind){
 		idx++;
 	}
 	return idx;

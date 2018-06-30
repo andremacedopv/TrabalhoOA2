@@ -13,6 +13,8 @@
 int main(){
 	/* Prguntar para o usuário qual a ordem a ser utilizada. */
  	int ordem;
+    char chave[9];
+
  	do{
 		printf("Digite a ordem da Árvore-B:\n");
     scanf("%d", &ordem);
@@ -54,6 +56,13 @@ int main(){
    	     	break;
 
       		case REMOVER:
+	      		ImprimirArvore(Arvore);
+      			printf("Insira uma chave:\n");
+      			scanf("%8s", chave);
+      			RemoverItem(Arvore->raiz, Arvore->ordem, chave);
+      			Salvar_ArvB(Arvore, nome_arq_ind);
+      			Imprimir_Indices(nome_arq_ind);
+      			ImprimirArvore(Arvore);
        			//Remover_Registro();
     		break;
 
