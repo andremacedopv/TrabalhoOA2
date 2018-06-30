@@ -60,7 +60,7 @@ int main(){
    	 		case INCLUIR:
    	   			Inserir_Registro(Arvore, nome_arq, nome_arq_ind);
             printf("\n");
-            Imprimir_Indices(nome_arq_ind);
+            ImprimirArquivo(nome_arq);
             printf("\n");
             ImprimirArvore(Arvore);
    	     	break;
@@ -68,7 +68,7 @@ int main(){
       		case REMOVER:
        			Remover_Registro(Arvore, nome_arq, nome_arq_ind);
             printf("\n");
-      			Imprimir_Indices(nome_arq_ind);
+      			ImprimirArquivo(nome_arq);
       			printf("\n");
             ImprimirArvore(Arvore);
     		break;
