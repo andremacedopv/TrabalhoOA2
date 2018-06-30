@@ -59,6 +59,10 @@ int main(){
    	 	switch(opcao){
    	 		case INCLUIR:
    	   			Inserir_Registro(Arvore, nome_arq, nome_arq_ind);
+            printf("\n");
+            Imprimir_Indices(nome_arq_ind);
+            printf("\n");
+            ImprimirArvore(Arvore);
    	     	break;
 
       		case REMOVER:
@@ -86,7 +90,6 @@ int main(){
     		break;
 
     		case SAIR:
-    			/* LIberar arvore. */
          	 	LiberarArvore(Arvore);
         		continuar = 0;
     		break;
